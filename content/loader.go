@@ -24,6 +24,75 @@ type StageContent struct {
 	Tests       []model.TestCase `json:"tests"`
 }
 
+type StageInfo struct {
+	Track string `json:"track"`
+	Stage int    `json:"stage"`
+	Title string `json:"title"`
+}
+
+func extractTitleFromReadme(readme string, fallback string) string {
+	lines := strings.Split(readme, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "# ") {
+			parts := strings.SplitN(line, ":", 2)
+			if len(parts) == 2 {
+				return strings.TrimSpace(parts[1])
+			}
+			return strings.TrimSpace(strings.TrimPrefix(line, "# "))
+		}
+	}
+	return fallback
+}
+
+func ListStages(track string) ([]StageInfo, error) {
+	trackDir := track
+	entries, err := fs.ReadDir(embeddedFiles, trackDir)
+	if err != nil {
+		return nil, fmt.Errorf("track %q tidak ditemukan", track)
+	}
+
+	var stages []StageInfo
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		parts := strings.SplitN(entry.Name(), "-", 2)
+		if len(parts) < 2 {
+			continue
+		}
+		var stageNum int
+		if _, err := fmt.Sscanf(parts[0], "%d", &stageNum); err != nil {
+			continue
+		}
+
+		stagePath := path.Join(trackDir, entry.Name())
+		readmeBytes, err := embeddedFiles.ReadFile(path.Join(stagePath, "README.md"))
+		fallbackTitle := strings.ReplaceAll(parts[1], "-", " ")
+		title := fallbackTitle
+		if err == nil {
+			title = extractTitleFromReadme(string(readmeBytes), fallbackTitle)
+		}
+
+		stages = append(stages, StageInfo{
+			Track: track,
+			Stage: stageNum,
+			Title: title,
+		})
+	}
+
+	// Sort stages by Stage ascending
+	for i := 0; i < len(stages); i++ {
+		for j := i + 1; j < len(stages); j++ {
+			if stages[i].Stage > stages[j].Stage {
+				stages[i], stages[j] = stages[j], stages[i]
+			}
+		}
+	}
+
+	return stages, nil
+}
+
 func GetStageContent(track string, stage int) (*StageContent, error) {
 	trackDir := track
 	entries, err := fs.ReadDir(embeddedFiles, trackDir)
@@ -66,11 +135,12 @@ func GetStageContent(track string, stage int) (*StageContent, error) {
 		return nil, fmt.Errorf("gagal parsing tests.json: %w", err)
 	}
 
+	fallbackTitle := stageDirName
 	titleParts := strings.SplitN(stageDirName, "-", 2)
-	title := stageDirName
 	if len(titleParts) == 2 {
-		title = strings.ReplaceAll(titleParts[1], "-", " ")
+		fallbackTitle = strings.ReplaceAll(titleParts[1], "-", " ")
 	}
+	title := extractTitleFromReadme(string(readmeBytes), fallbackTitle)
 
 	return &StageContent{
 		Track:       track,

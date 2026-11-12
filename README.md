@@ -43,9 +43,18 @@ Letakkan `learn.exe` di folder belajar kamu, lalu buka terminal (CMD / PowerShel
 # Menampilkan panduan bantuan
 learn --help
 
+# Melihat daftar stage tantangan yang tersedia
+learn stage list
+
 # Membuka stage pertama (Kalkulator Sederhana)
 learn init 1
 ```
+
+> **Catatan `--force`:** Jika kodinganmu error parah dan kamu ingin mereset `main.c` kembali ke template bersih awal dari nol, gunakan:
+> ```bash
+> learn init 1 --force
+> ```
+> Ini adalah tombol RESET aman, bukan perintah berbahaya.
 
 ### Langkah 3: Mengerjakan Tantangan
 Perintah di atas akan membuat folder `learn-c/easy-stage-1/`.

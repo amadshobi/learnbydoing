@@ -21,14 +21,20 @@ import (
 
 func PrintHelp(w io.Writer) {
 	helpText := `
-=============================================================
-             LEARN CLI - Staged C/C++ Challenges
-=============================================================
+█░░ █▀▀ ▄▀█ █▀█ █▄░█                  ▄█▄
+█▄▄ ██▄ █▀█ █▀▄ █░▀█                ▄█████▄     │
+                                  ▄█████████▄   │
+──────── STAGED LEARNING ──────── ▀█████████▀  (o)
+                                    ███████
 
 PENGGUNAAN:
   learn [perintah] [opsi]
 
 PERINTAH YANG TERSEDIA:
+  stage list         Melihat daftar semua stage tantangan yang tersedia
+                     Contoh: learn stage list
+                             learn stage list --easy
+
   init <stage>       Membuat folder dan materi untuk stage tantangan
                      Contoh: learn init 1
                              learn init 1 --easy
@@ -44,13 +50,18 @@ PERINTAH YANG TERSEDIA:
 
   help, -h, --help   Menampilkan panduan ini
 
-TIPS:
-  1. Mulai dengan: learn init 1
-  2. Buka folder yang dibuat: cd learn-c/easy-stage-1
-  3. Baca README.md dan kerjakan kodenya di main.c
-  4. Jalankan: learn test
-  5. Selesai? Jalankan: learn submit
-=============================================================
+TIPS PENGGUNAAN:
+  1. Mulai dengan melihat daftar stage: learn stage list
+  2. Buka stage pertama               : learn init 1
+  3. Masuk ke folder stage            : cd learn-c/easy-stage-1
+  4. Baca README.md dan kerjakan kodenya di file solusi
+  5. Uji kodemu kapan saja            : learn test
+  6. Selesai? Kumpulkan hasil         : learn submit
+
+CATATAN:
+  Flag '--force' pada 'learn init <stage> --force' berfungsi sebagai tombol RESET aman
+  untuk mengembalikan kode ke template awal bersih jika kodemu error parah dan ingin
+  mengulang dari nol (bukan aksi berbahaya/merusak sistem).
 `
 	fmt.Fprint(w, helpText)
 }
@@ -66,6 +77,13 @@ func ExecuteArgs(args []string, out io.Writer) error {
 	case "-h", "--help", "help":
 		PrintHelp(out)
 		return nil
+	case "stage":
+		if len(args) > 1 && args[1] == "list" {
+			return runStageList(args[2:], out)
+		}
+		return runStageList(args[1:], out)
+	case "list":
+		return runStageList(args[1:], out)
 	case "init":
 		return runInit(args[1:], out)
 	case "test":
@@ -78,6 +96,28 @@ func ExecuteArgs(args []string, out io.Writer) error {
 		fmt.Fprintf(out, "[✗] Perintah %q tidak dikenali. Ketik 'learn --help' untuk melihat bantuan.\n", command)
 		return nil
 	}
+}
+
+func runStageList(args []string, out io.Writer) error {
+	track := "easy"
+	for _, a := range args {
+		if a == "--easy" {
+			track = "easy"
+		}
+	}
+
+	stages, err := content.ListStages(track)
+	if err != nil {
+		fmt.Fprintf(out, "[✗] Gagal mengambil daftar stage untuk track %q: %v\n", track, err)
+		return nil
+	}
+
+	fmt.Fprintf(out, "\nDAFTAR STAGE TANTANGAN [%s]:\n", strings.ToUpper(track))
+	for _, s := range stages {
+		fmt.Fprintf(out, "  %d. %-23s  jalankan : learn init %d --%s\n", s.Stage, s.Title, s.Stage, s.Track)
+	}
+	fmt.Fprintln(out)
+	return nil
 }
 
 func runInit(args []string, out io.Writer) error {

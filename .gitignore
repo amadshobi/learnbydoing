@@ -9,5 +9,6 @@ learn
 # Test artifacts and temporary files
 temp_*
 *.test
+*.docx
 .learn_progress.json
 learn-c/
