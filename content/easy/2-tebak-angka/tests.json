@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Tebakan terlalu kecil (Sample)",
+    "hidden": false,
+    "stdin": "30\n",
+    "expected": "=== GAME TEBAK ANGKA ===\nMasukkan tebakan angka (1-100): Terlalu kecil!\n"
+  },
+  {
+    "name": "Tebakan terlalu besar (Sample)",
+    "hidden": false,
+    "stdin": "75\n",
+    "expected": "=== GAME TEBAK ANGKA ===\nMasukkan tebakan angka (1-100): Terlalu besar!\n"
+  },
+  {
+    "name": "Tebakan tepat (Hidden)",
+    "hidden": true,
+    "stdin": "50\n",
+    "expected": "=== GAME TEBAK ANGKA ===\nMasukkan tebakan angka (1-100): Selamat, tebakanmu benar!\n"
+  }
+]

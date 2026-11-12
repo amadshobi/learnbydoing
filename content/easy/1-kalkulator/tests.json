@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Penjumlahan dasar (Sample)",
+    "hidden": false,
+    "stdin": "10\n5\n+\n",
+    "expected": "=== KALKULATOR MINI ===\nMasukkan angka pertama: Masukkan angka kedua: Pilih operasi (+, -, *, /): Hasil: 15\n"
+  },
+  {
+    "name": "Pengurangan dasar (Sample)",
+    "hidden": false,
+    "stdin": "20\n8\n-\n",
+    "expected": "=== KALKULATOR MINI ===\nMasukkan angka pertama: Masukkan angka kedua: Pilih operasi (+, -, *, /): Hasil: 12\n"
+  },
+  {
+    "name": "Perkalian (Hidden)",
+    "hidden": true,
+    "stdin": "7\n6\n*\n",
+    "expected": "=== KALKULATOR MINI ===\nMasukkan angka pertama: Masukkan angka kedua: Pilih operasi (+, -, *, /): Hasil: 42\n"
+  },
+  {
+    "name": "Pembagian dengan nol (Hidden)",
+    "hidden": true,
+    "stdin": "10\n0\n/\n",
+    "expected": "=== KALKULATOR MINI ===\nMasukkan angka pertama: Masukkan angka kedua: Pilih operasi (+, -, *, /): Error: Tidak bisa membagi dengan nol!\n"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Belanja 2 barang (Sample)",
+    "hidden": false,
+    "stdin": "15000\n25000\n0\n",
+    "expected": "=== KASIR MINI ===\nMasukkan harga barang (0 untuk selesai): Masukkan harga barang (0 untuk selesai): Masukkan harga barang (0 untuk selesai): Total Belanja: Rp 40000\n"
+  },
+  {
+    "name": "Langsung selesai tanpa belanja (Sample)",
+    "hidden": false,
+    "stdin": "0\n",
+    "expected": "=== KASIR MINI ===\nMasukkan harga barang (0 untuk selesai): Total Belanja: Rp 0\n"
+  },
+  {
+    "name": "Belanja banyak item (Hidden)",
+    "hidden": true,
+    "stdin": "5000\n12000\n8000\n25000\n0\n",
+    "expected": "=== KASIR MINI ===\nMasukkan harga barang (0 untuk selesai): Masukkan harga barang (0 untuk selesai): Masukkan harga barang (0 untuk selesai): Masukkan harga barang (0 untuk selesai): Masukkan harga barang (0 untuk selesai): Total Belanja: Rp 50000\n"
+  }
+]
