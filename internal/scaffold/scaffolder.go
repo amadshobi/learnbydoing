@@ -30,6 +30,8 @@ func InitStage(targetRoot string, track string, stage int, force bool) (*InitRes
 	baseDir := filepath.Join(targetRoot, WorkspaceFolderName)
 	if filepath.Base(targetRoot) == WorkspaceFolderName {
 		baseDir = targetRoot
+	} else if filepath.Base(filepath.Dir(targetRoot)) == WorkspaceFolderName {
+		baseDir = filepath.Dir(targetRoot)
 	}
 
 	stageDir := filepath.Join(baseDir, stageContent.FolderName)

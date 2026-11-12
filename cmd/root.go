@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -82,47 +81,43 @@ func ExecuteArgs(args []string, out io.Writer) error {
 }
 
 func runInit(args []string, out io.Writer) error {
-	fs := flag.NewFlagSet("init", flag.ContinueOnError)
-	fs.SetOutput(out)
+	var forceFlag bool
+	var easyFlag bool = true
+	var stageArg string
 
-	easyFlag := fs.Bool("easy", true, "Gunakan kurikulum tingkat easy")
-	forceFlag := fs.Bool("force", false, "Timpa file kode jika sudah ada")
-	fs.BoolVar(forceFlag, "f", false, "Alias untuk --force")
-
-	var nonFlagArgs []string
 	for _, a := range args {
-		if strings.HasPrefix(a, "-") {
-			continue
+		switch a {
+		case "--force", "-f", "-force":
+			forceFlag = true
+		case "--easy":
+			easyFlag = true
+		default:
+			if !strings.HasPrefix(a, "-") && stageArg == "" {
+				stageArg = a
+			}
 		}
-		nonFlagArgs = append(nonFlagArgs, a)
 	}
 
-	if err := fs.Parse(args); err != nil {
-		return err
-	}
-
-	if len(nonFlagArgs) == 0 {
+	if stageArg == "" {
 		fmt.Fprintln(out, "[✗] Harap tentukan nomor stage yang ingin dibuka. Contoh: learn init 1")
 		return nil
 	}
 
-	stageNum, err := strconv.Atoi(nonFlagArgs[0])
+	stageNum, err := strconv.Atoi(stageArg)
 	if err != nil {
-		fmt.Fprintf(out, "[✗] Nomor stage %q tidak valid. Harus berupa angka.\n", nonFlagArgs[0])
+		fmt.Fprintf(out, "[✗] Nomor stage %q tidak valid. Harus berupa angka.\n", stageArg)
 		return nil
 	}
 
 	track := "easy"
-	if !*easyFlag {
-		track = "easy"
-	}
+	_ = easyFlag
 
 	cwd, err := os.Getwd()
 	if err != nil {
 		return err
 	}
 
-	res, err := scaffold.InitStage(cwd, track, stageNum, *forceFlag)
+	res, err := scaffold.InitStage(cwd, track, stageNum, forceFlag)
 	if err != nil {
 		fmt.Fprintf(out, "[✗] %s\n", err.Error())
 		return nil

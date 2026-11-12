@@ -36,6 +36,34 @@ func TestInitCommandExecution(t *testing.T) {
 	}
 }
 
+func TestInitForceFlagAfterPositionalArg(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "learn-cmd-force-*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	origWd, _ := os.Getwd()
+	os.Chdir(tempDir)
+	defer os.Chdir(origWd)
+
+	// First init
+	var outBuf bytes.Buffer
+	_ = ExecuteArgs([]string{"init", "1"}, &outBuf)
+
+	// Re-run with --force placed AFTER the stage number (documented usage)
+	outBuf.Reset()
+	err = ExecuteArgs([]string{"init", "1", "--force"}, &outBuf)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	outStr := outBuf.String()
+	if !strings.Contains(outStr, "berhasil dibuat") {
+		t.Errorf("expected --force after stage number to succeed, but got: %s", outStr)
+	}
+}
+
 func TestHelpCommandOutput(t *testing.T) {
 	var outBuf bytes.Buffer
 	err := ExecuteArgs([]string{"--help"}, &outBuf)
