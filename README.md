@@ -1,12 +1,41 @@
-# LEARN CLI 🚀
-> Platform Latihan Mandiri C/C++ Berbasis Staged TDD untuk Mahasiswa Semester 1.
+# LEARNBYDOING CLI 🚀
+> Platform Latihan Mandiri Pemrograman Berbasis Staged TDD untuk Mahasiswa Semester 1.
 
-`learn` adalah CLI lokal yang terinspirasi dari CodeCrafters, dirancang khusus untuk memandu mahasiswa baru belajar pemrograman C/C++ tahap demi tahap dengan umpan balik otomatis langsung di terminal.
+`learn` adalah CLI lokal yang terinspirasi dari CodeCrafters, dirancang khusus untuk memandu mahasiswa baru belajar pemrograman (C/C++ dan ke depannya bahasa lain) tahap demi tahap dengan umpan balik otomatis langsung di terminal.
+
+```text
+█░░ █▀▀ ▄▀█ █▀█ █▄░█                  ▄█▄
+█▄▄ ██▄ █▀█ █▀▄ █░▀█                ▄█████▄     │
+                                  ▄█████████▄   │
+──────── STAGED LEARNING ──────── ▀█████████▀  (o)
+                                    ███████
+```
+
+---
+
+## 📥 Cara Instalasi Otomatis (Cukup 1 Baris di Terminal)
+
+Teman-teman tidak perlu repot download manual atau atur Environment PATH sendiri. Cukup jalankan perintah instalasi di bawah ini:
+
+### Untuk Windows (PowerShell):
+Buka PowerShell, lalu ketik/paste:
+```powershell
+irm https://raw.githubusercontent.com/<username-github>/learnbydoing/main/install.ps1 | iex
+```
+*(Ganti `<username-github>` dengan username akun GitHub pembuat repo)*
+
+### Untuk Linux / WSL / macOS (Bash):
+Buka terminal Bash, lalu ketik/paste:
+```bash
+curl -fsSL https://raw.githubusercontent.com/<username-github>/learnbydoing/main/install.sh | bash
+```
+
+> **Catatan:** Script installer otomatis menempatkan binary ke folder `~/.learn/bin` dan mendaftarkannya ke PATH. Selesai instalasi, perintah `learn` langsung bisa dipanggil di direktori mana saja!
 
 ---
 
 ## ✨ Fitur Utama
-- **100% Offline & Portable:** Menggunakan single binary Go (`learn.exe`) dengan kurikulum, starter code, dan test case ter-embed langsung di dalamnya (`//go:embed`). Tidak butuh koneksi internet atau server eksternal.
+- **100% Offline & Portable:** Menggunakan single binary Go (`learn.exe`) dengan kurikulum, starter code, dan test case ter-embed langsung di dalamnya (`//go:embed`). Tidak butuh koneksi internet atau server eksternal saat mengerjakan soal.
 - **Dukungan C & C++:** Otomatis mendeteksi file kode mahasiswa (`main.c` menggunakan `gcc` atau `main.cpp` menggunakan `g++`).
 - **Pengujian Stdin/Stdout Dua Lapis:**
   - `learn test`: Menguji dengan sample test terbuka beserta visualisasi diff jika salah.
@@ -16,74 +45,75 @@
 
 ---
 
-## 🛠️ Cara Build Binary (Untuk Dibagikan ke Teman)
+## 💻 Panduan Penggunaan
 
-### 1. Build untuk Windows (`learn.exe`):
+### 1. Persiapan Compiler
+Pastikan laptop sudah terinstall compiler C/C++ (misal: MinGW-w64 di Windows atau `build-essential` di Linux) sehingga perintah `gcc` atau `g++` dapat dipanggil di terminal.
+
+### 2. Mulai Tantangan
+Buka terminal (CMD / PowerShell / Bash) di folder tempat kamu ingin belajar:
 ```bash
-go build -o learn.exe .
-```
-
-### 2. Cross-Compile dari Linux/WSL untuk Windows:
-```bash
-GOOS=windows GOARCH=amd64 go build -o learn.exe .
-```
-
-Kamu tinggal membagikan file `learn.exe` tersebut ke teman-teman kuliahmu!
-
----
-
-## 💻 Panduan Penggunaan Mahasiswa
-
-### Langkah 1: Persiapan
-Pastikan laptop sudah terinstall compiler C/C++ (misal: MinGW-w64 di Windows) sehingga perintah `gcc` atau `g++` dapat dipanggil di terminal.
-
-### Langkah 2: Mulai Tantangan
-Letakkan `learn.exe` di folder belajar kamu, lalu buka terminal (CMD / PowerShell / Bash):
-```bash
-# Menampilkan panduan bantuan
+# Menampilkan panduan lengkap
 learn --help
 
-# Melihat daftar stage tantangan yang tersedia
+# Melihat daftar semua stage yang tersedia
 learn stage list
 
 # Membuka stage pertama (Kalkulator Sederhana)
 learn init 1
 ```
 
-> **Catatan `--force`:** Jika kodinganmu error parah dan kamu ingin mereset `main.c` kembali ke template bersih awal dari nol, gunakan:
+> **💡 Catatan Flag `--force`:**  
+> Jika kodinganmu error parah dan kamu ingin mereset `main.c` kembali ke template bersih awal dari nol, gunakan:
 > ```bash
 > learn init 1 --force
 > ```
 > Ini adalah tombol RESET aman, bukan perintah berbahaya.
 
-### Langkah 3: Mengerjakan Tantangan
-Perintah di atas akan membuat folder `learn-c/easy-stage-1/`.
+### 3. Mengerjakan Tantangan
+Perintah `learn init 1` akan membuat folder `learn-c/easy-stage-1/`:
 1. Masuk ke folder stage:
    ```bash
    cd learn-c/easy-stage-1
    ```
-2. Baca panduan materi dan spesifikasi di `README.md`.
-3. Buka file `main.c` di IDE atau text editor favorit kamu (VS Code, Dev-C++, Notepad++, dll) dan tulis solusinya.
+2. Baca materi dan spesifikasi interaksi di `README.md`.
+3. Buka file `main.c` di editor favoritmu (VS Code, Dev-C++, Notepad++, dll) dan tulis solusinya.
 
-### Langkah 4: Uji Coba Solusi
+### 4. Uji Coba Solusi
 Ketik kapan saja di terminal:
 ```bash
 learn test
 ```
-Jika ada kesalahan logika atau kompilasi, CLI akan menampilkan pesan ramah serta perbandingan output yang diharapkan.
+Jika ada kesalahan logika atau kompilasi, CLI akan menampilkan pesan ramah serta perbandingan output yang diharapkan vs output kodemu.
 
-### Langkah 5: Kumpulkan dan Buka Stage Berikutnya
+### 5. Kumpulkan dan Buka Stage Berikutnya
 Jika semua sample test sudah lulus:
 ```bash
 learn submit
 ```
-CLI akan memvalidasi skenario lanjutan. Jika berhasil, progresmu akan dicatat dan kamu akan dipandu untuk membuka stage berikutnya:
+CLI akan menguji kasus rahasia (hidden test). Jika berhasil, progresmu akan disimpan dan kamu akan diarahkan ke stage berikutnya:
 ```bash
 learn init 2 --easy
 ```
 
-### Cek Progres
-Kapan saja kamu ingin melihat progres stage yang sudah kamu selesaikan:
+### 6. Cek Progres Belajar
+Kapan saja kamu ingin melihat stage yang sudah berhasil diselesaikan:
 ```bash
 learn status
+```
+
+---
+
+## 🛠️ Build Mandiri dari Source Code (Opsional)
+
+Jika ingin mengompilasi binary sendiri dari source code:
+```bash
+# Build untuk Windows
+go build -o learn.exe .
+
+# Cross-compile dari Linux/WSL untuk Windows
+GOOS=windows GOARCH=amd64 go build -o learn.exe .
+
+# Build untuk Linux
+GOOS=linux GOARCH=amd64 go build -o learn .
 ```
