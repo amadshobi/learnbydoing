@@ -33,10 +33,31 @@ if ($UserPath -notlike "*$InstallDir*") {
     [Environment]::SetEnvironmentVariable("Path", $NewPath, [EnvironmentVariableTarget]::User)
 }
 
-# 4. Refresh PATH di sesi PowerShell saat ini
-$env:Path = "$env:Path;$InstallDir"
+# 4. Tambahkan ke PowerShell Profile agar tab/terminal baru (termasuk VS Code) langsung mengenali 'learn'
+$ProfilePaths = @(
+    (Join-Path ([Environment]::GetFolderPath("MyDocuments")) "WindowsPowerShell\Microsoft.PowerShell_profile.ps1"),
+    (Join-Path ([Environment]::GetFolderPath("MyDocuments")) "PowerShell\Microsoft.PowerShell_profile.ps1")
+)
 
-# 5. Cek ketersediaan gcc / g++
+foreach ($Prof in $ProfilePaths) {
+    try {
+        $ProfDir = Split-Path $Prof
+        if (-not (Test-Path $ProfDir)) {
+            New-Item -ItemType Directory -Path $ProfDir -Force | Out-Null
+        }
+        $ProfileSnippet = "`n# Learn CLI PATH`nif (`$env:Path -notlike '*$InstallDir*') { `$env:Path = `"$InstallDir;`" + `$env:Path }`n"
+        if (-not (Test-Path $Prof) -or (Get-Content $Prof -Raw) -notlike "*$InstallDir*") {
+            Add-Content -Path $Prof -Value $ProfileSnippet -Force
+        }
+    } catch {
+        # Abaikan jika ada issue permission profile
+    }
+}
+
+# 5. Refresh PATH di sesi PowerShell saat ini
+$env:Path = "$InstallDir;$env:Path"
+
+# 6. Cek ketersediaan gcc / g++
 Write-Host "🔍 Memeriksa compiler C/C++ (gcc)..." -ForegroundColor Cyan
 if (Get-Command gcc -ErrorAction SilentlyContinue) {
     Write-Host "✓ GCC terdeteksi! Sistem siap digunakan." -ForegroundColor Green
@@ -47,4 +68,5 @@ if (Get-Command gcc -ErrorAction SilentlyContinue) {
 
 Write-Host ""
 Write-Host "🎉 Instalasi selesai! Kamu sekarang bisa mengetik 'learn' di terminal mana saja." -ForegroundColor Green
+Write-Host "💡 Catatan: Jika jendela terminal atau VS Code sudah terbuka sebelum install, cukup tutup dan buka kembali (restart terminal) agar PATH ter-refresh." -ForegroundColor Yellow
 Write-Host "👉 Coba ketik: learn --help" -ForegroundColor Cyan
