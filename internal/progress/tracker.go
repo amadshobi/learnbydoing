@@ -13,12 +13,30 @@ type ProgressData struct {
 	Completed map[string]bool `json:"completed"`
 }
 
-func getProgressFilePath(rootDir string) string {
-	return filepath.Join(rootDir, ProgressFileName)
+func FindProgressFilePath(startDir string) string {
+	// Check if learn-c exists in startDir
+	learnCDir := filepath.Join(startDir, "learn-c")
+	if info, err := os.Stat(learnCDir); err == nil && info.IsDir() {
+		return filepath.Join(learnCDir, ProgressFileName)
+	}
+
+	curr := startDir
+	for i := 0; i < 4; i++ {
+		candidate := filepath.Join(curr, ProgressFileName)
+		if _, err := os.Stat(candidate); err == nil {
+			return candidate
+		}
+		parent := filepath.Dir(curr)
+		if parent == curr {
+			break
+		}
+		curr = parent
+	}
+	return filepath.Join(startDir, ProgressFileName)
 }
 
 func LoadProgress(rootDir string) (*ProgressData, error) {
-	filePath := getProgressFilePath(rootDir)
+	filePath := FindProgressFilePath(rootDir)
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -51,6 +69,6 @@ func SaveProgress(rootDir string, track string, stage int) error {
 		return err
 	}
 
-	filePath := getProgressFilePath(rootDir)
+	filePath := FindProgressFilePath(rootDir)
 	return os.WriteFile(filePath, data, 0644)
 }
