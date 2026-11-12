@@ -112,3 +112,36 @@ func TestStageListCommand(t *testing.T) {
 		t.Errorf("expected 'learn list' to work, got: %s", outBuf.String())
 	}
 }
+
+func TestVersionCommand(t *testing.T) {
+	var outBuf bytes.Buffer
+	err := ExecuteArgs([]string{"version"}, &outBuf)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	outStr := outBuf.String()
+	if !strings.Contains(outStr, "learnbydoing CLI v") {
+		t.Errorf("expected version output, got: %s", outStr)
+	}
+
+	outBuf.Reset()
+	err = ExecuteArgs([]string{"-v"}, &outBuf)
+	if err != nil {
+		t.Fatalf("unexpected error with -v: %v", err)
+	}
+	if !strings.Contains(outBuf.String(), "learnbydoing CLI v") {
+		t.Errorf("expected version output with -v, got: %s", outBuf.String())
+	}
+}
+
+func TestUpdateCommandLatest(t *testing.T) {
+	var outBuf bytes.Buffer
+	err := ExecuteArgs([]string{"update"}, &outBuf)
+	if err != nil {
+		t.Fatalf("unexpected error on update: %v", err)
+	}
+	outStr := outBuf.String()
+	if !strings.Contains(outStr, "Memeriksa pembaruan") {
+		t.Errorf("expected update to check github, got: %s", outStr)
+	}
+}

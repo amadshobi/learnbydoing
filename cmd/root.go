@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -16,16 +17,20 @@ import (
 	"learn-cli/internal/progress"
 	"learn-cli/internal/runner"
 	"learn-cli/internal/scaffold"
+	"learn-cli/internal/updater"
 	"learn-cli/internal/validator"
 )
 
+const Version = "v1.0.0"
+
 func PrintHelp(w io.Writer) {
-	helpText := `
+	helpText := fmt.Sprintf(`
 █░░ █▀▀ ▄▀█ █▀█ █▄░█                  ▄█▄
 █▄▄ ██▄ █▀█ █▀▄ █░▀█                ▄█████▄     │
                                   ▄█████████▄   │
 ──────── STAGED LEARNING ──────── ▀█████████▀  (o)
                                     ███████
+                              learnbydoing %s
 
 PENGGUNAAN:
   learn [perintah] [opsi]
@@ -48,6 +53,10 @@ PERINTAH YANG TERSEDIA:
 
   status             Melihat progres tantangan yang sudah kamu selesaikan
 
+  update             Memperbarui CLI ke versi rilis terbaru secara otomatis
+
+  version, -v        Menampilkan versi CLI saat ini
+
   help, -h, --help   Menampilkan panduan ini
 
 TIPS PENGGUNAAN:
@@ -62,7 +71,7 @@ CATATAN:
   Flag '--force' pada 'learn init <stage> --force' berfungsi sebagai tombol RESET aman
   untuk mengembalikan kode ke template awal bersih jika kodemu error parah dan ingin
   mengulang dari nol (bukan aksi berbahaya/merusak sistem).
-`
+`, Version)
 	fmt.Fprint(w, helpText)
 }
 
@@ -77,6 +86,10 @@ func ExecuteArgs(args []string, out io.Writer) error {
 	case "-h", "--help", "help":
 		PrintHelp(out)
 		return nil
+	case "-v", "--version", "version":
+		return runVersion(out)
+	case "update":
+		return runUpdate(out)
 	case "stage":
 		if len(args) > 1 && args[1] == "list" {
 			return runStageList(args[2:], out)
@@ -96,6 +109,34 @@ func ExecuteArgs(args []string, out io.Writer) error {
 		fmt.Fprintf(out, "[✗] Perintah %q tidak dikenali. Ketik 'learn --help' untuk melihat bantuan.\n", command)
 		return nil
 	}
+}
+
+func runVersion(out io.Writer) error {
+	fmt.Fprintf(out, "learnbydoing CLI %s (%s/%s)\n", Version, runtime.GOOS, runtime.GOARCH)
+	return nil
+}
+
+func runUpdate(out io.Writer) error {
+	fmt.Fprintln(out, "🔍 Memeriksa pembaruan di GitHub...")
+	rel, hasUpdate, err := updater.CheckUpdate(Version)
+	if err != nil {
+		fmt.Fprintf(out, "[✗] Gagal memeriksa update: %v\n", err)
+		return nil
+	}
+
+	if !hasUpdate {
+		fmt.Fprintf(out, "✓ Kamu sudah menggunakan versi terbaru (%s).\n", Version)
+		return nil
+	}
+
+	fmt.Fprintf(out, "🎉 Versi baru tersedia: %s (versi saat ini: %s)\n", rel.TagName, Version)
+	if err := updater.PerformUpdate(rel, out); err != nil {
+		fmt.Fprintf(out, "[✗] Gagal melakukan update: %v\n", err)
+		return nil
+	}
+
+	fmt.Fprintf(out, "✨ Berhasil memperbarui CLI ke %s!\n", rel.TagName)
+	return nil
 }
 
 func runStageList(args []string, out io.Writer) error {

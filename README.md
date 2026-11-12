@@ -39,6 +39,7 @@ curl -fsSL https://raw.githubusercontent.com/amadshobi/learnbydoing/main/install
 - **Pengujian Stdin/Stdout Dua Lapis:**
   - `learn test`: Menguji dengan sample test terbuka beserta visualisasi diff jika salah.
   - `learn submit`: Menguji validasi penuh (termasuk hidden test) dan mencatat stage selesai.
+- **Self-Update Otomatis:** Perintah `learn update` memungkinkan mahasiswa memperbarui materi dan fitur CLI langsung dari terminal tanpa install ulang.
 - **Proteksi Anti-Infinite-Loop:** Proses eksekusi dibatasi timeout 3 detik untuk mencegah terminal macet akibat perulangan `while`/`for` tanpa henti.
 - **Pesan Ramah Mahasiswa:** Semua log instruksi, tips compiler, dan diff disajikan dalam Bahasa Indonesia yang komunikatif.
 
@@ -99,6 +100,19 @@ learn init 2 --easy
 Kapan saja kamu ingin melihat stage yang sudah berhasil diselesaikan:
 ```bash
 learn status
+```
+
+### 7. Memperbarui CLI (Self-Update)
+Jika ada materi baru atau perbaikan, kamu cukup menjalankan:
+```bash
+learn update
+```
+CLI akan otomatis mengecek ke GitHub, mengunduh rilis binary terbaru, dan mengganti binary lokal tanpa perlu install ulang!
+
+Untuk mengecek versi CLI yang sedang kamu gunakan:
+```bash
+learn version
+# atau: learn -v
 ```
 
 ---
