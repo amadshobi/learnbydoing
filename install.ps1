@@ -14,8 +14,7 @@ if (-not (Test-Path $InstallDir)) {
 }
 
 # 2. Download binary dari GitHub Release
-# Catatan: ganti URL di bawah sesuai username repo GitHub kamu
-$Repo = "ahmads/learnbydoing" # Default placeholder, akan mengikuti release repo
+$Repo = "amadshobi/learnbydoing"
 $DownloadUrl = "https://github.com/$Repo/releases/latest/download/learn-windows-amd64.exe"
 
 Write-Host "⬇️  Mengunduh binary learn.exe..." -ForegroundColor Yellow

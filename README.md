@@ -20,14 +20,13 @@ Teman-teman tidak perlu repot download manual atau atur Environment PATH sendiri
 ### Untuk Windows (PowerShell):
 Buka PowerShell, lalu ketik/paste:
 ```powershell
-irm https://raw.githubusercontent.com/<username-github>/learnbydoing/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/amadshobi/learnbydoing/main/install.ps1 | iex
 ```
-*(Ganti `<username-github>` dengan username akun GitHub pembuat repo)*
 
 ### Untuk Linux / WSL / macOS (Bash):
 Buka terminal Bash, lalu ketik/paste:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/<username-github>/learnbydoing/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/amadshobi/learnbydoing/main/install.sh | bash
 ```
 
 > **Catatan:** Script installer otomatis menempatkan binary ke folder `~/.learn/bin` dan mendaftarkannya ke PATH. Selesai instalasi, perintah `learn` langsung bisa dipanggil di direktori mana saja!

@@ -11,7 +11,7 @@ EXE_PATH="$INSTALL_DIR/learn"
 
 mkdir -p "$INSTALL_DIR"
 
-REPO="ahmads/learnbydoing"
+REPO="amadshobi/learnbydoing"
 DOWNLOAD_URL="https://github.com/$REPO/releases/latest/download/learn-linux-amd64"
 
 echo "⬇️  Mengunduh binary learn..."
